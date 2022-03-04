@@ -20,11 +20,11 @@
   "homepage": "https://github.com/alto-io/decentralized-game-example#readme",
   "devDependencies": {
     "@parcel/config-default": "2.0.0-beta.1",
+    "hardhat": "^2.9.0",
     "parcel": "2.0.0-beta.1",
     "parcel-reporter-static-files-copy": "^1.2.2",
     "sirv-cli": "^1.0.11"
   },
-  "dependencies": {},
   "staticFiles": {
     "staticPath": "assets",
     "staticOutPath": "assets",
