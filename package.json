@@ -29,5 +29,8 @@
     "staticPath": "assets",
     "staticOutPath": "assets",
     "watcherGlob": "**"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.5.0"
   }
 }
