@@ -42,6 +42,12 @@ contract Game is ERC721 {
         tokenCounter += 1;
     }
 
+    // CHANGE ONCE TABLE IS SETUP
+    // https://testnet.tableland.network/tables/{table_id}/id/.
+    function _baseURI() internal pure override returns (string memory) {
+        return "https://testnet.tableland.network/tables/0/id/";
+    }
+
     function getAllCharacters() public view returns (CharacterAttributes[] memory) {
         return allCharacters;
     }
