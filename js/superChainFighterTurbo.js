@@ -1,3 +1,7 @@
+const serverUrl = "https://6thwxfwcdmhf.usemoralis.com:2053/server";
+const appId = "vs0g4jMVvYwMO27KJ7G0XB2czwTK8JetVwtdB5Vv";
+Moralis.start({ serverUrl, appId });
+
 var config = {
 	type: Phaser.AUTO,
 	width: 800,
@@ -16,7 +20,17 @@ var config = {
 	}
 };
 
-var game = new Phaser.Game(config);
+var game;
+
+(function launch(){
+	let user = Moralis.User.current();
+	if (!user) {
+		console.log("PLEASE LOG IN WITH METAMASK!");
+	} else {
+		console.log(user.get("ethAddress") + " " + "logged in");
+		game = new Phaser.Game(config);
+	}
+})()
 
 function preload ()
 {
