@@ -165,6 +165,7 @@ function create ()
 
 function update ()
 {
+
 	if (cursors.left.isDown)
 	{
 		playerOne.setVelocityX(-160);

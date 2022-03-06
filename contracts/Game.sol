@@ -9,6 +9,8 @@ contract Game is ERC721 {
 
     uint public tokenCounter;
 
+    string private baseURI;
+
     struct CharacterAttributes {
         uint characterIndex;
         string name;
@@ -44,11 +46,17 @@ contract Game is ERC721 {
 
     // CHANGE ONCE TABLE IS SETUP
     // https://testnet.tableland.network/tables/{table_id}/id/.
-    function _baseURI() internal pure override returns (string memory) {
-        return "https://testnet.tableland.network/tables/0/id/";
+    function _baseURI() internal view virtual override returns (string memory) {
+        return baseURI;
     }
 
     function getAllCharacters() public view returns (CharacterAttributes[] memory) {
         return allCharacters;
+    }
+
+    //allows changing metadata in the future
+    //should be deployed as onlyOwner for production
+    function setBaseURI(string memory BaseURI) public {
+        baseURI = BaseURI;
     }
 }

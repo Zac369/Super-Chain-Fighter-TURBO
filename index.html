@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Decentralized Game Example</title>
+    <title>Super Chain Fighter TURBO</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
     <script src="https://unpkg.com/moralis/dist/moralis.js"></script>
@@ -12,20 +12,34 @@
 
     <style type="text/css">
         body {
-            margin: 0;
+            margin: 0 auto;
             padding: 0;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .container {
+            text-align: center;
+            justify-content: center;
+        }
+
+        canvas {
+            display: block;
+            margin: auto;
         }
     </style>
 </head>
 
 <body>
-    <br>
-    <button id="btn-login">Moralis Metamask Login</button>
-    <button id="btn-logout">Logout</button>
-    <br><br>
-    <script type="text/javascript" src="./login.js"></script>
+    <div class=container>
+        <image src="./assets/SCFTurbo_logo.png" height="100" width="auto"/>
+        <br>
+        <button id="btn-login">Moralis Metamask Login</button>
+        <button id="btn-logout">Logout</button>
+        <br><br>
+        <script type="text/javascript" src="./login.js"></script>
 
-    <div id="phaser-example"></div>
-
+        <div class="viewport" id="phaser-example"></div>
+    </div>
 </body>
 </html>
