@@ -1,4 +1,8 @@
-//import PhaserHealth from 'phaser-component-health';
+
+const serverUrl = "https://6thwxfwcdmhf.usemoralis.com:2053/server";
+const appId = "vs0g4jMVvYwMO27KJ7G0XB2czwTK8JetVwtdB5Vv";
+Moralis.start({ serverUrl, appId });
+
 
 var config = {
 	type: Phaser.AUTO,
@@ -14,12 +18,21 @@ var config = {
 	scene: {
 		preload: preload,
 		create: create,
-		update: update,
-		render: render
+		update: update
 	}
 };
 
-var game = new Phaser.Game(config);
+var game;
+
+(function launch(){
+	let user = Moralis.User.current();
+	if (!user) {
+		console.log("PLEASE LOG IN WITH METAMASK!");
+	} else {
+		console.log(user.get("ethAddress") + " " + "logged in");
+		game = new Phaser.Game(config);
+	}
+})()
 
 function preload ()
 {
@@ -30,10 +43,6 @@ function preload ()
 	this.load.spritesheet('heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
 }
 
-function render() {
-	//this.debug.body(playerOne);
-	//this.debug.body(playerTwo);
-}
 
 let hp = 200;
 
