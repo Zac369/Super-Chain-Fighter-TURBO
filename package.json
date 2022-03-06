@@ -37,6 +37,8 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.5.0",
+    "phaser-component-health": "^3.0.0",
+    "phaser-percent-bar": "^1.1.5",
     "base64-sol": "^1.1.0"
   }
 }
