@@ -1,3 +1,5 @@
+//import PhaserHealth from 'phaser-component-health';
+
 var config = {
 	type: Phaser.AUTO,
 	width: 800,
@@ -12,7 +14,8 @@ var config = {
 	scene: {
 		preload: preload,
 		create: create,
-		update: update
+		update: update,
+		render: render
 	}
 };
 
@@ -24,25 +27,64 @@ function preload ()
 	this.load.image('sky', 'assets/skies/sky1.png');
 	this.load.image('ground','assets/platforms/ground.png');
 	this.load.spritesheet('rogue', 'assets/sprites/rogue/rogue.png', {frameWidth: 100, frameHeight: 100 });
-
+	this.load.spritesheet('heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
 }
+
+function render() {
+	//this.debug.body(playerOne);
+	//this.debug.body(playerTwo);
+}
+
+let hp = 200;
+
+
+
 
 function create ()
 {
 	this.add.image(400, 300, 'sky');
 
+	this.add.text(10, 10, "health");
+
+	this.add.rectangle(200, 18, 200, 20, "0xf54242");
+
+
 	platforms = this.physics.add.staticGroup();
 
 	platforms.create(400, 570, 'ground').setScale(2).refreshBody();
 
-	player = this.physics.add.sprite(80, 450, 'rogue');
+	playerOne = this.physics.add.sprite(80, 450, 'rogue');
 
-	player.setBounce(0.2);
-	player.setCollideWorldBounds(true);
+	playerTwo = this.physics.add.sprite(450, 450, 'heavy');
 
-	player.body.setGravityY(300);
 
-	this.physics.add.collider(player, platforms);
+	playerTwo.setCollideWorldBounds(true);
+	playerOne.setBounce(0.2);
+	playerOne.setCollideWorldBounds(true);
+
+	playerTwo.body.setGravityY(330);
+	playerOne.body.setGravityY(300);
+	playerTwo.body.setMaxVelocityX(0);
+	//playerTwo.phyonCollide(true);
+
+	playerOne.body.setSize(40, 100);
+	playerTwo.body.setSize(40, 100);
+
+
+	this.physics.add.collider(playerTwo, platforms);
+	this.physics.add.collider(playerOne, platforms);
+	this.physics.add.collider(playerOne, playerTwo, function (playerOne, playerTwo) {
+		playerTwo.damage(0.1);
+
+	});
+
+	PhaserHealth.AddTo(playerTwo, 2, 0, 2);
+
+	playerTwo.on('die', function (spr) {
+		spr.setActive(false).setVisible(false);
+	});
+
+	
 
 	this.anims.create({
 		key: 'left',
@@ -51,20 +93,29 @@ function create ()
 		repeat: -1
 	});
 
+
 	this.anims.create({
 		key: 'turn',
 		frames: [ { key: 'rogue', frame: 4 } ],
 		frameRate: 20
 	});
 
+
 	this.anims.create({
 		key: 'right',
-		frames: this.anims.generateFrameNumbers( 'rogue', { start: 5, end: 8 }),
+		frames: this.anims.generateFrameNumbers('rogue', { start: 5, end: 8 }),
 		frameRate: 10,
 		repeat: -1
 	});
 
+	this.anims.create({	
+		key: 'punch',
+		frames: this.anims.generateFrameNumbers('rogue', { start: 5, end: 7 }),
+		frameRate: 20
+	});
+
 	cursors = this.input.keyboard.createCursorKeys();
+	punchInput = this.input.keyboard.addKey("D");
 
 
 
@@ -75,23 +126,33 @@ function update ()
 {
 	if (cursors.left.isDown)
 	{
-		player.setVelocityX(-160);
+		playerOne.setVelocityX(-160);
 
-		player.anims.play('left', true);
+		playerOne.anims.play('left', true);
+
 	} else if (cursors.right.isDown)
 	{
-		player.setVelocityX(160);
+		playerOne.setVelocityX(160);
 
-		player.anims.play('right', true);
+		playerOne.anims.play('right', true);
+	} else if (punchInput.isDown)
+	{
+		playerOne.anims.play('punch', true);
+		reduceHealth(0.25);
 	} else
 	{
-		player.setVelocityX(0);
+		playerOne.setVelocityX(0);
 
-		player.anims.play('turn');
+		playerOne.anims.play('turn');
 	}
 
-	if (cursors.up.isDown && player.body.touching.down)
+	if (cursors.up.isDown && playerOne.body.touching.down)
 	{
-		player.setVelocityY(-330);
+		playerOne.setVelocityY(-300);
 	}
+}
+
+function reduceHealth(number) {
+	this.hp = hp - number;
+
 }
