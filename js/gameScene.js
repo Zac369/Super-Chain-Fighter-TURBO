@@ -11,7 +11,8 @@ class GameScene extends Phaser.Scene {
     preload () {
         this.load.image('sky', 'assets/skies/sky1.png');
         this.load.image('ground','assets/platforms/ground.png');
-        this.load.spritesheet(`${this.selectedCharacter}`, `assets/sprites/${this.selectedCharacter}/${this.selectedCharacter}.png`, {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('rogue', 'assets/sprites/rogue/rogue.png', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
     };
 
     create () {
