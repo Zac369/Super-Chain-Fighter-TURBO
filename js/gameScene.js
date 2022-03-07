@@ -68,7 +68,7 @@ class GameScene extends Phaser.Scene {
          * 
          * right now P1 kills P2 after colliding with him enough times because no punch/kick parts have been finished
          * **/
-        this.physics.add.collider(this.player1, this.player2, function (playerOne, playerTwo) {
+        var hitCollider = this.physics.add.collider(this.player1, this.player2, function (playerOne, playerTwo) {
             playerTwo.damage(0.1);
 
         });
@@ -81,6 +81,7 @@ class GameScene extends Phaser.Scene {
         //can be changed to add a die animation
         this.player2.on('die', function (spr) {
             spr.setActive(false).setVisible(false);
+            hitCollider.active = false;
         });
 
         this.anims.create({
