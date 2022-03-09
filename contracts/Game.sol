@@ -2,6 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 import "hardhat/console.sol";
 
@@ -42,7 +43,12 @@ contract Game is ERC721 {
     // CHANGE ONCE TABLE IS SETUP
     // https://testnet.tableland.network/tables/{table_id}/id/.
     function _baseURI() internal view virtual override returns (string memory) {
-        return "https://testnet.tableland.network/tables/309/id/";
+        return "https://testnet.tableland.network/tables/345/id/";
+    }
+
+    function tokenURI(uint256 _tokenId) public pure override returns (string memory) {
+        string memory b = Strings.toString(_tokenId);
+        return string(abi.encodePacked("https://testnet.tableland.network/tables/345/id/", b));
     }
 
     function getAllCharacters() public view returns (CharacterAttributes[] memory) {
@@ -58,4 +64,10 @@ contract Game is ERC721 {
     function getUsersNFTs() public view returns (uint[] memory) {
         return ownerItems[msg.sender];
     }
+
+    function getCounter() public view returns (uint) {
+        return tokenCounter;
+    }
+
+    
 }

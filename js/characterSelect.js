@@ -13,7 +13,7 @@ class CharacterSelect extends Phaser.Scene {
         this.load.spritesheet('rogue', 'assets/sprites/rogue/rogue.png', {frameWidth: 100, frameHeight: 100 });
         this.load.spritesheet('heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
 
-        const CONTRACT_ADDRESS = '0xA8e9A33dfDe40b28c690612390fDA9ee5045AEF6';
+        const CONTRACT_ADDRESS = '0x7022Fdd6bA7e6Af2BB62bc65c566Cc709F6Da613';
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         this.gameContract = new ethers.Contract(
@@ -21,6 +21,20 @@ class CharacterSelect extends Phaser.Scene {
             game.abi,
             signer
         );
+
+        const connectToDB = async () => {
+            this.tbl = await connect({ network: "testnet" });
+        } 
+
+        connectToDB();
+
+        this.getCharacters = (characterIndex) => {
+            if (characterIndex == 0) {
+                return ["Rogue", "Description for Rogue", "ipfs://QmNghJegenUfrEnzjHvR9eRh1rqNg3JV9atfYuvL1LmSvd", 200, 10];
+            } else if (characterIndex == 1) {
+                return ["Heavy", "Description for Heavy", "ipfs://Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA", 200, 10];
+            }
+        }
 
         // nft/tableland functions
 
@@ -53,14 +67,12 @@ class CharacterSelect extends Phaser.Scene {
         }
 
         const queryTable = async () => {
-            const tbl = await connect({ network: "testnet" });
-        
-            const queryableName  = 'mytable_309';
+            const queryableName  = 'mytable_345';
             console.log(queryableName);
             
             for (let i = 0; i < NFTIDs.length; i++) {
                 const id = NFTIDs[i];
-                const { data: { rows, columns }} = await tbl.query(`SELECT * FROM ${queryableName } where id = ${id};`);
+                const { data: { rows, columns }} = await this.tbl.query(`SELECT * FROM ${queryableName } where id = ${id};`);
 
                 for (const [rowId, row] of Object.entries(rows)) {
                     this.NFTs[i] = row;
@@ -99,11 +111,31 @@ class CharacterSelect extends Phaser.Scene {
                     const mintTxn = await this.gameContract.mintCharacterNFT(characterIndex);
                     await mintTxn.wait();
                     console.log('mintTxn:', mintTxn);
+                    insertTable(characterIndex);
                 }
             } catch (error) {
                 console.warn('MintCharacterAction Error:', error);
             }
         };
+
+        const insertTable = async (characterIndex) => {
+            const character = this.getCharacters(characterIndex);
+
+            const name = character[0];
+            const description = character[1];
+            const image = character[2];
+            const attack = character[3];
+            const hp = character[4];
+        
+            const queryableName  = 'mytable_345';
+            console.log(queryableName);
+
+            let tokenCounter = await this.gameContract.getCounter();
+            tokenCounter = tokenCounter.toNumber() - 1;
+            console.log(tokenCounter);
+
+            const insertRes = await this.tbl.query(`INSERT INTO ${queryableName} (id, name, description, image, attack, hp) VALUES (${tokenCounter}, ${name}, ${description}, ${image}, ${attack}, ${hp});`);
+        }
         
 
         this.input.setDefaultCursor("default");
@@ -152,6 +184,7 @@ class CharacterSelect extends Phaser.Scene {
         
         press_enter_heavy.on('pointerdown', () => {
             mintCharacterNFTAction(1);
+
         });
 
         var enterGroup = this.add.group([press_enter_rogue, press_enter_heavy])
