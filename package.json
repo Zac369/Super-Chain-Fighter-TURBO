@@ -3,40 +3,42 @@
     "version": "0.0.1",
     "description": "Decentralized Game Example",
     "scripts": {
-      "serve": "sirv",
-      "start": "parcel index.html --open",
-      "build": "npm run clean && parcel build index.html --dist-dir ./dist",
-      "clean": "rimraf ./dist ./parcel-cache"
+        "serve": "sirv",
+        "start": "parcel index.html --open",
+        "build": "npm run clean && parcel build index.html --dist-dir ./dist",
+        "clean": "rimraf ./dist ./parcel-cache"
     },
     "repository": {
-      "type": "git",
-      "url": "git+https://github.com/alto-io/decentralized-game-example"
+        "type": "git",
+        "url": "git+https://github.com/alto-io/decentralized-game-example"
     },
     "author": "outplay.games",
     "license": "ISC",
     "bugs": {
-      "url": "https://github.com/alto-io/decentralized-game-example/issues"
+        "url": "https://github.com/alto-io/decentralized-game-example/issues"
     },
     "homepage": "https://github.com/alto-io/decentralized-game-example#readme",
     "devDependencies": {
-      "@nomiclabs/hardhat-ethers": "^2.0.5",
-      "@nomiclabs/hardhat-waffle": "^2.0.3",
-      "@parcel/config-default": "2.0.0-beta.1",
-      "chai": "^4.3.6",
-      "ethereum-waffle": "^3.4.0",
-      "ethers": "^5.5.4",
-      "hardhat": "^2.9.0",
-      "parcel": "2.0.0-beta.1",
-      "parcel-reporter-static-files-copy": "^1.2.2",
-      "sirv-cli": "^1.0.11"
+        "@nomiclabs/hardhat-ethers": "^2.0.5",
+        "@nomiclabs/hardhat-waffle": "^2.0.3",
+        "@parcel/config-default": "2.0.0-beta.1",
+        "chai": "^4.3.6",
+        "ethereum-waffle": "^3.4.0",
+        "ethers": "^5.5.4",
+        "hardhat": "^2.9.0",
+        "parcel": "2.0.0-beta.1",
+        "parcel-reporter-static-files-copy": "^1.2.2",
+        "sirv-cli": "^1.0.11"
     },
     "staticFiles": {
-      "staticPath": "assets",
-      "staticOutPath": "assets",
-      "watcherGlob": "**"
+        "staticPath": "assets",
+        "staticOutPath": "assets",
+        "watcherGlob": "**"
     },
     "dependencies": {
-      "@openzeppelin/contracts": "^4.5.0",
-      "base64-sol": "^1.1.0"
+        "@openzeppelin/contracts": "^4.5.0",
+        "@textile/tableland": "^0.1.2",
+        "base64-sol": "^1.1.0",
+        "dotenv": "^16.0.0"
     }
-  }
+}

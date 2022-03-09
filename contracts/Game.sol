@@ -22,22 +22,17 @@ contract Game is ERC721 {
     CharacterAttributes[] allCharacters;
 
     // Mapping from the nft's tokenId => that NFTs attributes.
-    mapping(uint256 => CharacterAttributes) public nftHolderAttributes;
+    mapping(uint => address) public nftHolders;
+    mapping(address => uint[]) public ownerItems;
+
 
     constructor() ERC721("Super Chain Fighter TURBO", "SCFT") {
-
+        tokenCounter = 0;
     }
 
     function mintCharacterNFT(uint _characterIndex) external {
-        _safeMint(msg.sender, tokenCounter + 1);
-
-        nftHolderAttributes[tokenCounter + 1] = CharacterAttributes({
-            characterIndex: _characterIndex,
-            name: allCharacters[_characterIndex].name,
-            imageURI: allCharacters[_characterIndex].imageURI,
-            hp: allCharacters[_characterIndex].hp,
-            attackDamage: allCharacters[_characterIndex].attackDamage
-        });
+        _safeMint(msg.sender, tokenCounter);
+        ownerItems[msg.sender].push(tokenCounter);
 
         console.log("Minted NFT w/ tokenId %s and characterIndex %s", tokenCounter + 1, _characterIndex);
 
@@ -47,7 +42,7 @@ contract Game is ERC721 {
     // CHANGE ONCE TABLE IS SETUP
     // https://testnet.tableland.network/tables/{table_id}/id/.
     function _baseURI() internal view virtual override returns (string memory) {
-        return baseURI;
+        return "https://testnet.tableland.network/tables/309/id/";
     }
 
     function getAllCharacters() public view returns (CharacterAttributes[] memory) {
@@ -58,5 +53,9 @@ contract Game is ERC721 {
     //should be deployed as onlyOwner for production
     function setBaseURI(string memory BaseURI) public {
         baseURI = BaseURI;
+    }
+
+    function getUsersNFTs() public view returns (uint[] memory) {
+        return ownerItems[msg.sender];
     }
 }

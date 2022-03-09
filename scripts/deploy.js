@@ -3,7 +3,7 @@ const { ethers } = require("hardhat");
 async function main() {
     // We get the contract to deploy
     const Game = await ethers.getContractFactory("Game");
-    const game = await Game.deploy("Hello, Hardhat!");
+    const game = await Game.deploy();
   
     console.log("Game deployed to:", game.address);
   }
