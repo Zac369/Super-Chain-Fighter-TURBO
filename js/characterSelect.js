@@ -13,7 +13,7 @@ class CharacterSelect extends Phaser.Scene {
         this.load.spritesheet('Rogue', 'https://ipfs.infura.io/ipfs/QmNghJegenUfrEnzjHvR9eRh1rqNg3JV9atfYuvL1LmSvd', {frameWidth: 100, frameHeight: 100 });
         this.load.spritesheet('Heavy', 'https://ipfs.infura.io/ipfs/Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA', {frameWidth: 100, frameHeight: 100 });
 
-        const CONTRACT_ADDRESS = '0x01619bfaE0E00EC8407eFAcCF54Cb3cf1c334327';
+        const CONTRACT_ADDRESS = '0xC6Ee86f954f6e0F60cb32ee3d5709220FE20b0d9';
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         this.gameContract = new ethers.Contract(
@@ -24,6 +24,21 @@ class CharacterSelect extends Phaser.Scene {
 
         this.connectToDB = async () => {
             this.tbl = await connect({ network: "testnet" });
+            this.tableName = "placeholder";
+            
+            const tables = await this.tbl.list();
+            for (let i = 0; i < tables.length; i++) {
+                if (tables[i].name.startsWith("scft")) {
+                    this.tableName = tables[i].name;
+                }
+            }
+
+            if (this.tableName == "placeholder") {
+                const createRes = await this.tbl.create(
+                    `CREATE TABLE scft (id int, name text, description text, image text, attack int, hp int, primary key (id));`
+                );
+                this.tableName = createRes.name;
+            }
             getNFTIDs();
         } 
 
@@ -69,12 +84,9 @@ class CharacterSelect extends Phaser.Scene {
         }
 
         const queryTable = async () => {
-            const queryableName  = 'mytable_349';
-            console.log(queryableName);
-            
             for (let i = 0; i < NFTIDs.length; i++) {
                 const id = NFTIDs[i];
-                const { data: { rows, columns }} = await this.tbl.query(`SELECT * FROM ${queryableName } where id = ${id};`);
+                const { data: { rows, columns }} = await this.tbl.query(`SELECT * FROM ${this.tableName} where id = ${id};`);
 
                 for (const [rowId, row] of Object.entries(rows)) {
                     this.NFTs[i] = row;
@@ -132,15 +144,12 @@ class CharacterSelect extends Phaser.Scene {
             const image = character[3];
             const attack = character[4];
             const hp = character[5];
-        
-            const queryableName  = 'mytable_349';
-            console.log(queryableName);
 
             let tokenCounter = await this.gameContract.getCounter();
             tokenCounter = tokenCounter.toNumber() - 1;
             console.log(tokenCounter);
 
-            const insertRes = await this.tbl.query(`INSERT INTO ${queryableName} (id, name, description, image, attack, hp) VALUES (${tokenCounter}, '${name}', '${description}', '${image}', ${attack}, ${hp});`);
+            const insertRes = await this.tbl.query(`INSERT INTO ${this.tableName} (id, name, description, image, attack, hp) VALUES (${tokenCounter}, '${name}', '${description}', '${image}', ${attack}, ${hp});`);
         }
         
 
@@ -169,7 +178,7 @@ class CharacterSelect extends Phaser.Scene {
             clear_choice.setInteractive({ useHandCursor: true });
         });
 
-        var press_enter_rogue = this.add.text(300, 500, "Press-Enter").setVisible(false);
+        var press_enter_rogue = this.add.text(300, 200, "Press-Enter").setVisible(false);
         
         press_enter_rogue.on('pointerdown', () => {
             mintCharacterNFTAction(0);
@@ -185,16 +194,15 @@ class CharacterSelect extends Phaser.Scene {
             clear_choice.setInteractive({ useHandCursor: true });
         });
 
-        var press_enter_heavy = this.add.text(300, 500, "Press-Enter").setVisible(false);
+        var press_enter_heavy = this.add.text(300, 200, "Press-Enter").setVisible(false);
         
         press_enter_heavy.on('pointerdown', () => {
             mintCharacterNFTAction(1);
-
         });
 
         var enterGroup = this.add.group([press_enter_rogue, press_enter_heavy])
 
-        var clear_choice = this.add.text(500, 500, "clear choice").setVisible(false);
+        var clear_choice = this.add.text(500, 200, "clear choice").setVisible(false);
         
         clear_choice.on('pointerdown', () => {
             charsGroup.setVisible(true);

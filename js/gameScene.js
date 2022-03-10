@@ -20,7 +20,8 @@ class GameScene extends Phaser.Scene {
 
         this.add.image(400, 300, 'sky');
 
-        this.add.text(10, 10, "health");
+        this.add.text(10, 10, "Player 1");
+        this.add.text(10, 30, "Health");
 
         //the health bar is drawn here
         //it's static and doesn't change

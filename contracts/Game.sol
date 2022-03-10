@@ -43,7 +43,7 @@ contract Game is ERC721 {
     // CHANGE ONCE TABLE IS SETUP
     // https://testnet.tableland.network/tables/{table_id}/id/.
     function _baseURI() internal view virtual override returns (string memory) {
-        return "https://testnet.tableland.network/tables/349/id/";
+        return "https://testnet.tableland.network/tables/374/id/";
     }
 
     function tokenURI(uint256 _tokenId) public pure override returns (string memory) {
