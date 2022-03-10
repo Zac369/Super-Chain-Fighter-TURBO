@@ -13,7 +13,7 @@ class CharacterSelect extends Phaser.Scene {
         this.load.spritesheet('rogue', 'assets/sprites/rogue/rogue.png', {frameWidth: 100, frameHeight: 100 });
         this.load.spritesheet('heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
 
-        const CONTRACT_ADDRESS = '0x7022Fdd6bA7e6Af2BB62bc65c566Cc709F6Da613';
+        const CONTRACT_ADDRESS = '0x01619bfaE0E00EC8407eFAcCF54Cb3cf1c334327';
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         this.gameContract = new ethers.Contract(
@@ -22,11 +22,12 @@ class CharacterSelect extends Phaser.Scene {
             signer
         );
 
-        const connectToDB = async () => {
+        this.connectToDB = async () => {
             this.tbl = await connect({ network: "testnet" });
+            getNFTIDs();
         } 
 
-        connectToDB();
+        this.connectToDB();
 
         this.getCharacters = (characterIndex) => {
             if (characterIndex == 0) {
@@ -67,7 +68,7 @@ class CharacterSelect extends Phaser.Scene {
         }
 
         const queryTable = async () => {
-            const queryableName  = 'mytable_345';
+            const queryableName  = 'mytable_349';
             console.log(queryableName);
             
             for (let i = 0; i < NFTIDs.length; i++) {
@@ -83,15 +84,13 @@ class CharacterSelect extends Phaser.Scene {
             }
             this.displayCharacters();
         }
-
-        getNFTIDs();
         
 	}
 
 	create() {
         this.displayCharacters = async () => {
             for (let i = 0; i < this.NFTs.length; i++) {
-                const name = this.NFTs[i][0];
+                const name = this.NFTs[i][1];
                 const hp = this.NFTs[i][4];
                 const attack = this.NFTs[i][5];
 
@@ -112,6 +111,7 @@ class CharacterSelect extends Phaser.Scene {
                     await mintTxn.wait();
                     console.log('mintTxn:', mintTxn);
                     insertTable(characterIndex);
+                    this.scene.start("gameScene", {character: characterIndex});
                 }
             } catch (error) {
                 console.warn('MintCharacterAction Error:', error);
@@ -127,14 +127,14 @@ class CharacterSelect extends Phaser.Scene {
             const attack = character[3];
             const hp = character[4];
         
-            const queryableName  = 'mytable_345';
+            const queryableName  = 'mytable_349';
             console.log(queryableName);
 
             let tokenCounter = await this.gameContract.getCounter();
             tokenCounter = tokenCounter.toNumber() - 1;
             console.log(tokenCounter);
 
-            const insertRes = await this.tbl.query(`INSERT INTO ${queryableName} (id, name, description, image, attack, hp) VALUES (${tokenCounter}, ${name}, ${description}, ${image}, ${attack}, ${hp});`);
+            const insertRes = await this.tbl.query(`INSERT INTO ${queryableName} (id, name, description, image, attack, hp) VALUES (${tokenCounter}, '${name}', '${description}', '${image}', ${attack}, ${hp});`);
         }
         
 
@@ -167,7 +167,6 @@ class CharacterSelect extends Phaser.Scene {
         
         press_enter_rogue.on('pointerdown', () => {
             mintCharacterNFTAction(0);
-            this.scene.start("gameScene", {character: "rogue"});
         });
 
         heavy.on("pointerdown", function() {
