@@ -5,7 +5,7 @@ class GameScene extends Phaser.Scene {
 	}
 
     init(data) {
-        this.selectedCharacter = data.character;
+        this.selectedCharacter = data.character[1];
     }
 
     preload () {

@@ -10,8 +10,8 @@ class CharacterSelect extends Phaser.Scene {
 
 	preload() {
 		this.load.image('sky', 'assets/skies/sky1.png');
-        this.load.spritesheet('rogue', 'assets/sprites/rogue/rogue.png', {frameWidth: 100, frameHeight: 100 });
-        this.load.spritesheet('heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('Rogue', 'https://ipfs.infura.io/ipfs/QmNghJegenUfrEnzjHvR9eRh1rqNg3JV9atfYuvL1LmSvd', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('Heavy', 'https://ipfs.infura.io/ipfs/Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA', {frameWidth: 100, frameHeight: 100 });
 
         const CONTRACT_ADDRESS = '0x01619bfaE0E00EC8407eFAcCF54Cb3cf1c334327';
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -31,9 +31,10 @@ class CharacterSelect extends Phaser.Scene {
 
         this.getCharacters = (characterIndex) => {
             if (characterIndex == 0) {
-                return ["Rogue", "Description for Rogue", "ipfs://QmNghJegenUfrEnzjHvR9eRh1rqNg3JV9atfYuvL1LmSvd", 200, 10];
+                // zero represents row, change during mint
+                return [0, "Rogue", "Description for Rogue", "ipfs://QmNghJegenUfrEnzjHvR9eRh1rqNg3JV9atfYuvL1LmSvd", 200, 10];
             } else if (characterIndex == 1) {
-                return ["Heavy", "Description for Heavy", "ipfs://Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA", 200, 10];
+                return [0, "Heavy", "Description for Heavy", "ipfs://Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA", 200, 10];
             }
         }
 
@@ -97,8 +98,11 @@ class CharacterSelect extends Phaser.Scene {
                 this.add.text(150*i + 30, 490, name, {font: '18px'});
                 this.add.text(150*i + 30, 520, 'Att: ' + attack, {font: '18px'});
                 this.add.text(150*i + 30, 550, 'Def: ' + hp, {font: '18px'});
-                const imageNum = 'charImage' + i;
-                var charImage = this.add.sprite(150*i + 50, 400, imageNum, 4).setInteractive({ useHandCursor: true });
+
+                var charImage = this.add.sprite(150*i + 60, 400, name, 4).setInteractive({ useHandCursor: true });
+                charImage.on('pointerdown', () => {
+                    this.scene.start("gameScene", {character: this.NFTs[i]});
+                });
             }
         }
 
@@ -111,7 +115,9 @@ class CharacterSelect extends Phaser.Scene {
                     await mintTxn.wait();
                     console.log('mintTxn:', mintTxn);
                     insertTable(characterIndex);
-                    this.scene.start("gameScene", {character: characterIndex});
+                    const character = this.getCharacters(characterIndex);
+                    character[0] = this.NFTs.length;
+                    this.scene.start("gameScene", {character: character});
                 }
             } catch (error) {
                 console.warn('MintCharacterAction Error:', error);
@@ -121,11 +127,11 @@ class CharacterSelect extends Phaser.Scene {
         const insertTable = async (characterIndex) => {
             const character = this.getCharacters(characterIndex);
 
-            const name = character[0];
-            const description = character[1];
-            const image = character[2];
-            const attack = character[3];
-            const hp = character[4];
+            const name = character[1];
+            const description = character[2];
+            const image = character[3];
+            const attack = character[4];
+            const hp = character[5];
         
             const queryableName  = 'mytable_349';
             console.log(queryableName);
@@ -144,9 +150,9 @@ class CharacterSelect extends Phaser.Scene {
 
         this.add.text(170, 20, 'Mint Your Character', {font: '36px'});
 
-        var rogue = this.add.sprite(200, 120, 'rogue', 4).setInteractive({ useHandCursor: true });
+        var rogue = this.add.sprite(200, 120, 'Rogue', 4).setInteractive({ useHandCursor: true });
 
-        var heavy = this.add.sprite(580, 120, 'heavy', 4).setInteractive({ useHandCursor: true });
+        var heavy = this.add.sprite(580, 120, 'Heavy', 4).setInteractive({ useHandCursor: true });
 
         this.add.text(280, 250, 'You own', {font: '36px'});
 
