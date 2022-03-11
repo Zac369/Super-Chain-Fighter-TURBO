@@ -42,10 +42,16 @@ contract Game is ERC721 {
 
     // CHANGE ONCE TABLE IS SETUP
     // https://testnet.tableland.network/tables/{table_id}/id/.
+
+    // this should just return baseURI, that's the purpose of setBaseURI()
     function _baseURI() internal view virtual override returns (string memory) {
         return "https://testnet.tableland.network/tables/349/id/";
     }
 
+    // Shouldn't need to hard code the URI here, you'd set this after deploying the contract
+    // But it's fine for temporary usage
+    // should be:
+    // return string(abi.encodePacked(baseURI, b));
     function tokenURI(uint256 _tokenId) public pure override returns (string memory) {
         string memory b = Strings.toString(_tokenId);
         return string(abi.encodePacked("https://testnet.tableland.network/tables/349/id/", b));

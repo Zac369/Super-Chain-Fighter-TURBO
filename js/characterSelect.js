@@ -58,6 +58,7 @@ class CharacterSelect extends Phaser.Scene {
 
                     for (let i =0; i < mintTxn.length; i++) {
                         NFTIDs[i] = mintTxn[i].toNumber();
+                        console.log(NFTIDs[i]);
                     }
                     queryTable();
 
