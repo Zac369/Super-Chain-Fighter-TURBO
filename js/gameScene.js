@@ -11,11 +11,12 @@ class GameScene extends Phaser.Scene {
     preload () {
         this.load.image('sky', 'assets/skies/sky1.png');
         this.load.image('ground','assets/platforms/ground.png');
-        this.load.spritesheet('rogue', 'assets/sprites/rogue/rogue.png', {frameWidth: 100, frameHeight: 100 });
-        this.load.spritesheet('heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('Rogue', 'assets/sprites/rogue/rogue.png', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('Heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
     };
 
-    create () {
+    async create () {
+        this.competitors = {};
         this.hp = 200;
 
         this.add.image(400, 300, 'sky');
@@ -35,7 +36,7 @@ class GameScene extends Phaser.Scene {
 
         this.player1 = this.physics.add.sprite(80, 450, this.selectedCharacter);
 
-        this.player2 = this.physics.add.sprite(450, 450, 'heavy');
+        this.player2 = this.physics.add.sprite(450, 450, 'Heavy');
 
         this.player1.setBounce(0.2);
         this.player1.setCollideWorldBounds(true);
@@ -117,9 +118,28 @@ class GameScene extends Phaser.Scene {
 
         //the button for a punch is currently D, but can be changed
 	    this.punchInput = this.input.keyboard.addKey("D");
+
+        let user = Moralis.User.current();
+        let query = new Moralis.Query('PlayerPosition');
+        let subscription = await query.subscribe();
+        subscription.on('create', (plocation) => {
+            if(plocation.get("player") != user.get("ethAddress")){
+
+                // if first time seeing
+                if(this.competitors[plocation.get("player")] == undefined){
+                // create a sprite
+                this.competitors[plocation.get("player")] = this.add.image( plocation.get("x"), plocation.get("y"), plocation.get("name"));
+                }
+                else{
+                this.competitors[plocation.get("player")].x = plocation.get("x");
+                this.competitors[plocation.get("player")].y = plocation.get("y");
+                this.competitors[plocation.get("player")].setFrame(plocation.get("frame"));
+                }
+            }
+        });
     };
 
-    update () {
+    async update () {
         if (this.cursors.left.isDown)
         {
             this.player1.setVelocityX(-160);
@@ -142,6 +162,25 @@ class GameScene extends Phaser.Scene {
         if (this.cursors.up.isDown && this.player1.body.touching.down)
         {
             this.player1.setVelocityY(-330);
+        }
+
+        if(this.player1.lastX!=this.player1.x  || this.player1.lastY!=this.player1.y){
+
+            let user = Moralis.User.current();
+
+            const PlayerPosition = Moralis.Object.extend("PlayerPosition");
+            const playerPosition = new PlayerPosition();
+            
+            playerPosition.set("player", user.get("ethAddress"));
+            playerPosition.set("x", this.player1.x);
+            playerPosition.set("y", this.player1.y);
+            playerPosition.set("frame", this.player1.frame.name);
+            playerPosition.set("name", this.selectedCharacter);
+            
+            this.player1.lastX = this.player1.x;
+            this.player1.lastY = this.player1.y;
+  
+            await playerPosition.save();
         }
     };
 }
