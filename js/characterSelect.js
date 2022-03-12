@@ -10,10 +10,10 @@ class CharacterSelect extends Phaser.Scene {
 
 	preload() {
 		this.load.image('sky', 'assets/skies/sky1.png');
-        this.load.spritesheet('Rogue', 'https://ipfs.infura.io/ipfs/QmNghJegenUfrEnzjHvR9eRh1rqNg3JV9atfYuvL1LmSvd', {frameWidth: 100, frameHeight: 100 });
-        this.load.spritesheet('Heavy', 'https://ipfs.infura.io/ipfs/Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('rogue', 'https://ipfs.infura.io/ipfs/QmdG2hytvmwLrk3dpqU4uEKDJHkCJDgtbZSmGSRGX2jx2D', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('heavy', 'https://ipfs.infura.io/ipfs/Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA', {frameWidth: 100, frameHeight: 100 });
 
-        const CONTRACT_ADDRESS = '0xC6Ee86f954f6e0F60cb32ee3d5709220FE20b0d9';
+        const CONTRACT_ADDRESS = '0xBe326839068012aaDCDFD8acEBA411dE7C31398E';
         const provider = new ethers.providers.Web3Provider(window.ethereum);
         const signer = provider.getSigner();
         this.gameContract = new ethers.Contract(
@@ -28,14 +28,15 @@ class CharacterSelect extends Phaser.Scene {
             
             const tables = await this.tbl.list();
             for (let i = 0; i < tables.length; i++) {
-                if (tables[i].name.startsWith("scft")) {
+                if (tables[i].name.startsWith("scftgame")) {
                     this.tableName = tables[i].name;
+                    console.log(this.tableName);
                 }
             }
 
             if (this.tableName == "placeholder") {
                 const createRes = await this.tbl.create(
-                    `CREATE TABLE scft (id int, name text, description text, image text, attack int, hp int, primary key (id));`
+                    `CREATE TABLE scftgame (id int, name text, description text, image text, attack int, hp int, speed int, jump int, wins int, primary key (id));`
                 );
                 this.tableName = createRes.name;
             }
@@ -47,9 +48,9 @@ class CharacterSelect extends Phaser.Scene {
         this.getCharacters = (characterIndex) => {
             if (characterIndex == 0) {
                 // zero represents row, change during mint
-                return [0, "Rogue", "Description for Rogue", "ipfs://QmNghJegenUfrEnzjHvR9eRh1rqNg3JV9atfYuvL1LmSvd", 200, 10];
+                return [0, "rogue", "Description for Rogue", "ipfs://QmNghJegenUfrEnzjHvR9eRh1rqNg3JV9atfYuvL1LmSvd", 100, 20, 10, 10, 0];
             } else if (characterIndex == 1) {
-                return [0, "Heavy", "Description for Heavy", "ipfs://Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA", 200, 10];
+                return [0, "heavy", "Description for Heavy", "ipfs://Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA", 300, 10, 8, 6, 0];
             }
         }
 
@@ -107,14 +108,18 @@ class CharacterSelect extends Phaser.Scene {
                 const name = this.NFTs[i][1];
                 const hp = this.NFTs[i][4];
                 const attack = this.NFTs[i][5];
+                const speed = this.NFTs[i][6];
+                const jump = this.NFTs[i][7];
 
-                this.add.text(150*i + 30, 490, name, {font: '18px'});
-                this.add.text(150*i + 30, 520, 'Att: ' + attack, {font: '18px'});
-                this.add.text(150*i + 30, 550, 'Def: ' + hp, {font: '18px'});
+                this.add.text(150*i + 30, 430, name, {font: '18px'});
+                this.add.text(150*i + 30, 460, 'Att: ' + attack, {font: '18px'});
+                this.add.text(150*i + 30, 490, 'Def: ' + hp, {font: '18px'});
+                this.add.text(150*i + 30, 520, 'Spd: ' + speed, {font: '18px'});
+                this.add.text(150*i + 30, 550, 'Jmp: ' + jump, {font: '18px'});
 
-                var charImage = this.add.sprite(150*i + 60, 400, name, 4).setInteractive({ useHandCursor: true });
+                var charImage = this.add.sprite(150*i + 60, 350, name, 4).setInteractive({ useHandCursor: true });
                 charImage.on('pointerdown', () => {
-                    this.scene.start("gameScene", {character: this.NFTs[i]});
+                    this.scene.start("gameScene", {character: this.NFTs[i], tbl: this.tbl});
                 });
             }
         }
@@ -130,7 +135,7 @@ class CharacterSelect extends Phaser.Scene {
                     insertTable(characterIndex);
                     const character = this.getCharacters(characterIndex);
                     character[0] = this.NFTs.length;
-                    this.scene.start("gameScene", {character: character});
+                    this.scene.start("gameScene", {character: character, tbl: this.tbl});
                 }
             } catch (error) {
                 console.warn('MintCharacterAction Error:', error);
@@ -145,12 +150,15 @@ class CharacterSelect extends Phaser.Scene {
             const image = character[3];
             const attack = character[4];
             const hp = character[5];
+            const speed = character[6];
+            const jump = character[7];
+            const wins = character[8];
 
             let tokenCounter = await this.gameContract.getCounter();
             tokenCounter = tokenCounter.toNumber() - 1;
             console.log(tokenCounter);
 
-            const insertRes = await this.tbl.query(`INSERT INTO ${this.tableName} (id, name, description, image, attack, hp) VALUES (${tokenCounter}, '${name}', '${description}', '${image}', ${attack}, ${hp});`);
+            const insertRes = await this.tbl.query(`INSERT INTO ${this.tableName} (id, name, description, image, attack, hp, speed, jump, wins) VALUES (${tokenCounter}, '${name}', '${description}', '${image}', ${attack}, ${hp}, ${speed}, ${jump}, ${wins});`);
         }
         
 
@@ -160,9 +168,9 @@ class CharacterSelect extends Phaser.Scene {
 
         this.add.text(170, 20, 'Mint Your Character', {font: '36px'});
 
-        var rogue = this.add.sprite(200, 120, 'Rogue', 4).setInteractive({ useHandCursor: true });
+        var rogue = this.add.sprite(200, 120, 'rogue', 4).setInteractive({ useHandCursor: true });
 
-        var heavy = this.add.sprite(580, 120, 'Heavy', 4).setInteractive({ useHandCursor: true });
+        var heavy = this.add.sprite(580, 120, 'heavy', 4).setInteractive({ useHandCursor: true });
 
         this.add.text(280, 250, 'You own', {font: '36px'});
 

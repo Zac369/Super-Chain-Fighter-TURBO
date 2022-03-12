@@ -3,6 +3,7 @@ import GameScene from './gameScene.js';
 import CharacterSelect from './characterSelect.js';
 import HighScoreScene from './highScoreScene.js';
 import UpgradeScene from './upgradeScene.js';
+import GameOver from './gameOver.js';
 
 // Our game scene
 var gameScene = new GameScene();
@@ -10,6 +11,7 @@ var titleScene = new TitleScene();
 var characterSelect = new CharacterSelect();
 var highScoreScene = new HighScoreScene();
 var upgradeScene = new UpgradeScene();
+var gameOver = new GameOver();
 
 const serverUrl = "https://6thwxfwcdmhf.usemoralis.com:2053/server";
 const appId = "vs0g4jMVvYwMO27KJ7G0XB2czwTK8JetVwtdB5Vv";
@@ -44,6 +46,7 @@ var game;
 		game.scene.add("characterSelect", characterSelect);
 		game.scene.add('highScoreScene', highScoreScene);
 		game.scene.add('upgradeScene', upgradeScene);
+		game.scene.add('gameOver', gameOver);
 
 		// start title
 		game.scene.start('titleScene');

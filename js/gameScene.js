@@ -5,8 +5,10 @@ class GameScene extends Phaser.Scene {
 	}
 
     init(data) {
+        this.data = data.character;
+        this.tbl = data.tbl;
         this.selectedCharacter = data.character[1];
-        this.youWonText = this.add.text(350, 400, "YOU WON!");
+        console.log(this.selectedCharacter);
     }
 
     preload () {
@@ -24,11 +26,6 @@ class GameScene extends Phaser.Scene {
 
         this.add.text(10, 10, "Player 1");
         this.add.text(10, 30, "Health");
-
-        this.gameOverText = this.add.text(345, 250, "GAME OVER");
-        this.youWonText = this.add.text(350, 300, "YOU WON!");
-        this.gameOverText.setVisible(false);
-        this.youWonText.setVisible(false);
 
         this.deadBool = false;
 
@@ -176,7 +173,6 @@ class GameScene extends Phaser.Scene {
 
         //the button for a punch is currently D, but can be changed
 	    this.punchInput = this.input.keyboard.addKey("D");
-
     };
 
 
@@ -195,7 +191,7 @@ class GameScene extends Phaser.Scene {
             this.hitBox.setY(this.player1.y - 20);
 
             this.player1.anims.play('right', true);
-        } else if (this.punchInput.isDown) {
+        } else if (this.punchInput.isDown && !this.player2.isDead()) {
             this.player1.anims.play('punch', true);
             setTimeout(() => {
                 this.hitCollider.active = true;
@@ -212,7 +208,6 @@ class GameScene extends Phaser.Scene {
 
             this.player1.anims.play('turn');
 
-
             this.hitCollider.active = false;
             this.hitBox.setY(this.player1.y - 20);
 
@@ -226,13 +221,13 @@ class GameScene extends Phaser.Scene {
 
         if (this.player2.isDead()) {
             console.log("found he's dead");
-            this.player1.setVisible(false);
-            this.youWonText.setVisible(true);
-            this.gameOverText.setVisible(true);
+            this.gameOver();
         }
     };
 
-    
+    gameOver() {
+        this.scene.start('gameOver', {character: this.data, tbl: this.tbl});
+    }
 
     
 }

@@ -45,7 +45,7 @@ contract Game is ERC721 {
 
     // this should just return baseURI, that's the purpose of setBaseURI()
     function _baseURI() internal view virtual override returns (string memory) {
-        return "https://testnet.tableland.network/tables/374/id/";
+        return "https://testnet.tableland.network/tables/440/id/";
     }
 
     // Shouldn't need to hard code the URI here, you'd set this after deploying the contract
@@ -54,7 +54,7 @@ contract Game is ERC721 {
     // return string(abi.encodePacked(baseURI, b));
     function tokenURI(uint256 _tokenId) public pure override returns (string memory) {
         string memory b = Strings.toString(_tokenId);
-        return string(abi.encodePacked("https://testnet.tableland.network/tables/349/id/", b));
+        return string(abi.encodePacked("https://testnet.tableland.network/tables/440/id/", b));
     }
 
     function getAllCharacters() public view returns (CharacterAttributes[] memory) {
