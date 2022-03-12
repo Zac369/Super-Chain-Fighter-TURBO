@@ -6,6 +6,7 @@ class GameScene extends Phaser.Scene {
 
     init(data) {
         this.selectedCharacter = data.character[1];
+        this.youWonText = this.add.text(350, 400, "YOU WON!");
     }
 
     preload () {
@@ -13,6 +14,7 @@ class GameScene extends Phaser.Scene {
         this.load.image('ground','assets/platforms/ground.png');
         this.load.spritesheet('rogue', 'assets/sprites/rogue/rogue.png', {frameWidth: 100, frameHeight: 100 });
         this.load.spritesheet('heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('ryu', 'assets/sprites/ryu/ryu.png', {frameWidth: 100, frameHeight: 100 });
     };
 
     create () {
@@ -22,6 +24,13 @@ class GameScene extends Phaser.Scene {
 
         this.add.text(10, 10, "Player 1");
         this.add.text(10, 30, "Health");
+
+        this.gameOverText = this.add.text(345, 250, "GAME OVER");
+        this.youWonText = this.add.text(350, 300, "YOU WON!");
+        this.gameOverText.setVisible(false);
+        this.youWonText.setVisible(false);
+
+        this.deadBool = false;
 
         //the health bar is drawn here
         //it's static and doesn't change
@@ -45,14 +54,9 @@ class GameScene extends Phaser.Scene {
         this.player1 = this.physics.add.sprite(80, 450, this.selectedCharacter);
         this.player2 = this.physics.add.sprite(450, 450, 'heavy');
 
+
         this.hitBox.setX(this.player1.x);
         this.hitBox.setY(this.player1.y - 20);
-
-        // the physics group that holds the p1 sprite and the hitbox
-        // this is necessary so the hitbox follows p1
-        //this.p1Group = this.physics.add.group([this.selectedCharacter, this.hitBox]);
-        
-        //
 
 
         this.player1.setBounce(0.2);
@@ -79,18 +83,13 @@ class GameScene extends Phaser.Scene {
         this.physics.add.collider(this.player2, platforms);
         this.physics.add.collider(this.hitBox, platforms);
 
-
-
         /**
          * allows characters to collide with each other
          * the function describes what event should occur upon collision
          * 
-         * TO DO: punch/kick animation, punch/kick hit boxes, punch/kick damage, punch/kick hit box colliders
-         * 
          * this is where you will put how much damage P1 can do to P2
          * this should be dynamically expressed by the NFT character loaded
          * 
-         * right now P1 kills P2 after colliding with him enough times because no punch/kick parts have been finished
          * **/
 
 
@@ -114,7 +113,9 @@ class GameScene extends Phaser.Scene {
         this.player2.on('die', function (spr) {
             spr.setActive(false).setVisible(false);
             touchCollider.active = false;
+
         });
+
 
         this.anims.create({
             key: 'left',
@@ -136,18 +137,46 @@ class GameScene extends Phaser.Scene {
             repeat: -1
         });
 
-        //this is the punch animation but I haven't drawn any hit sprites yet
-        //right now it's the same as a walk to the right
         this.anims.create({	
             key: 'punch',
-            frames: this.anims.generateFrameNumbers("rogue", { start: 9, end: 11 }),
+            frames: this.anims.generateFrameNumbers('rogue', { start: 9, end: 11 }),
             frameRate: 20
         });
+
+
+        // ryu animations
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('ryu', { start: 0, end: 4 }),
+            frameRate: 12,
+            repeat: -1
+        });
+
+        this.anims.create({ 
+            key: 'turn',
+            frames: this.anims.generateFrameNumbers('ryu', { start: 11, end: 14 }),
+            frameRate: 12
+        });
+
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('ryu', { start: 5, end: 9 }),
+            frameRate: 12,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'punch',
+            frames: this.anims.generateFrameNumbers('ryu', { start: 15, end: 19 }),
+            frameRate: 12,
+            repeat: -1
+        })
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
         //the button for a punch is currently D, but can be changed
 	    this.punchInput = this.input.keyboard.addKey("D");
+
     };
 
 
@@ -169,12 +198,10 @@ class GameScene extends Phaser.Scene {
         } else if (this.punchInput.isDown) {
             this.player1.anims.play('punch', true);
             setTimeout(() => {
-                console.log("running attack");
                 this.hitCollider.active = true;
                 this.hitBox.body.setOffset(30, 0);
             }, 5);
             setTimeout(() => {
-                console.log("turning off");
                 this.hitCollider.active = false;
                 this.hitBox.body.setOffset(-30, 0);
             }, 100);
@@ -196,8 +223,16 @@ class GameScene extends Phaser.Scene {
             this.player1.setVelocityY(-330);
             this.hitBox.setVelocityY(-30);
         }
+
+        if (this.player2.isDead()) {
+            console.log("found he's dead");
+            this.player1.setVisible(false);
+            this.youWonText.setVisible(true);
+            this.gameOverText.setVisible(true);
+        }
     };
 
+    
 
     
 }
