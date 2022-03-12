@@ -20,7 +20,8 @@ class GameScene extends Phaser.Scene {
 
         this.add.image(400, 300, 'sky');
 
-        this.add.text(10, 10, "health");
+        this.add.text(10, 10, "Player 1");
+        this.add.text(10, 30, "Health");
 
         //the health bar is drawn here
         //it's static and doesn't change
@@ -32,16 +33,36 @@ class GameScene extends Phaser.Scene {
 
         platforms.create(400, 570, 'ground').setScale(2).refreshBody();
 
-        this.player1 = this.physics.add.sprite(80, 450, this.selectedCharacter);
+        // the 'rendered' box of the hitbox
+        //var box = this.add.rectangle(30, 130, 30, 30, "0xf54242");
 
+        // the hitbox sprite. it can hold the collider
+        this.hitBox = this.physics.add.sprite(100, 450, 'box');
+        this.hitBox.setVisible(false);
+
+
+        //the player instances
+        this.player1 = this.physics.add.sprite(80, 450, this.selectedCharacter);
         this.player2 = this.physics.add.sprite(450, 450, 'heavy');
+
+        this.hitBox.setX(this.player1.x);
+        this.hitBox.setY(this.player1.y - 20);
+
+        // the physics group that holds the p1 sprite and the hitbox
+        // this is necessary so the hitbox follows p1
+        //this.p1Group = this.physics.add.group([this.selectedCharacter, this.hitBox]);
+        
+        //
+
 
         this.player1.setBounce(0.2);
         this.player1.setCollideWorldBounds(true);
         this.player2.setCollideWorldBounds(true);
+        this.hitBox.setCollideWorldBounds(true);
 
         this.player1.body.setGravityY(300);
         this.player2.body.setGravityY(300);
+        this.hitBox.body.setGravityY(0, -20);
         this.player2.body.setMaxVelocityX(0);
 
         /**
@@ -56,6 +77,9 @@ class GameScene extends Phaser.Scene {
 
         this.physics.add.collider(this.player1, platforms);
         this.physics.add.collider(this.player2, platforms);
+        this.physics.add.collider(this.hitBox, platforms);
+
+
 
         /**
          * allows characters to collide with each other
@@ -68,10 +92,18 @@ class GameScene extends Phaser.Scene {
          * 
          * right now P1 kills P2 after colliding with him enough times because no punch/kick parts have been finished
          * **/
-        var hitCollider = this.physics.add.collider(this.player1, this.player2, function (playerOne, playerTwo) {
+
+
+        var touchCollider = this.physics.add.collider(this.player1, this.player2);
+        var boxTouchCollider = this.physics.add.collider(this.hitBox, this.player2);
+
+        this.hitCollider = this.physics.add.collider(this.hitBox, this.player2, function (playerOne, playerTwo) {
             playerTwo.damage(0.1);
 
-        });
+        }, null, this);
+
+        this.hitCollider.active = false;
+
 
             //enemy health described here (starting health, min health, max health);
         //one can be added for P1 easily and both P1 and P2 should be dynamic with the NFT
@@ -81,7 +113,7 @@ class GameScene extends Phaser.Scene {
         //can be changed to add a die animation
         this.player2.on('die', function (spr) {
             spr.setActive(false).setVisible(false);
-            hitCollider.active = false;
+            touchCollider.active = false;
         });
 
         this.anims.create({
@@ -108,7 +140,7 @@ class GameScene extends Phaser.Scene {
         //right now it's the same as a walk to the right
         this.anims.create({	
             key: 'punch',
-            frames: this.anims.generateFrameNumbers(this.selectedCharacter, { start: 5, end: 7 }),
+            frames: this.anims.generateFrameNumbers("rogue", { start: 9, end: 11 }),
             frameRate: 20
         });
 
@@ -118,31 +150,56 @@ class GameScene extends Phaser.Scene {
 	    this.punchInput = this.input.keyboard.addKey("D");
     };
 
+
     update () {
         if (this.cursors.left.isDown)
         {
             this.player1.setVelocityX(-160);
+            this.hitBox.setVelocityX(-160);
+            this.hitBox.setY(this.player1.y - 20);
 
             this.player1.anims.play('left', true);
         } else if (this.cursors.right.isDown)
         {
             this.player1.setVelocityX(160);
+            this.hitBox.setVelocityX(160);
+            this.hitBox.setY(this.player1.y - 20);
 
             this.player1.anims.play('right', true);
         } else if (this.punchInput.isDown) {
             this.player1.anims.play('punch', true);
+            setTimeout(() => {
+                console.log("running attack");
+                this.hitCollider.active = true;
+                this.hitBox.body.setOffset(30, 0);
+            }, 5);
+            setTimeout(() => {
+                console.log("turning off");
+                this.hitCollider.active = false;
+                this.hitBox.body.setOffset(-30, 0);
+            }, 100);
         } else
         {
             this.player1.setVelocityX(0);
+            this.hitBox.setVelocityX(0);
 
             this.player1.anims.play('turn');
+
+
+            this.hitCollider.active = false;
+            this.hitBox.setY(this.player1.y - 20);
+
         }
 
         if (this.cursors.up.isDown && this.player1.body.touching.down)
         {
             this.player1.setVelocityY(-330);
+            this.hitBox.setVelocityY(-30);
         }
     };
+
+
+    
 }
 
 export default GameScene;

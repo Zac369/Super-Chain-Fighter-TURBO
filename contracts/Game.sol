@@ -45,7 +45,7 @@ contract Game is ERC721 {
 
     // this should just return baseURI, that's the purpose of setBaseURI()
     function _baseURI() internal view virtual override returns (string memory) {
-        return "https://testnet.tableland.network/tables/349/id/";
+        return "https://testnet.tableland.network/tables/374/id/";
     }
 
     // Shouldn't need to hard code the URI here, you'd set this after deploying the contract
