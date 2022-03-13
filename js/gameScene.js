@@ -20,7 +20,7 @@ class GameScene extends Phaser.Scene {
     };
 
     create () {
-        this.hp = Math.round(this.data[5] * 1.3 ** this.data[10]);
+        this.hp = this.data[5] * 1.3 ** this.data[10];
 
         this.add.image(400, 300, 'sky');
 
@@ -94,7 +94,7 @@ class GameScene extends Phaser.Scene {
         var boxTouchCollider = this.physics.add.collider(this.hitBox, this.player2);
 
         this.hitCollider = this.physics.add.collider(this.hitBox, this.player2, function (playerOne, playerTwo) {
-            playerTwo.damage(0.001 * Math.round(this.data[4] * 1.3 ** this.data[9]));
+            playerTwo.damage(0.001 * this.data[4] * 1.3 ** this.data[9]);
 
         }, null, this);
 
@@ -193,15 +193,15 @@ class GameScene extends Phaser.Scene {
     update () {
         if (this.cursors.left.isDown)
         {
-            this.player1.setVelocityX(-10 * Math.round(this.data[6] * 1.3 ** this.data[11]));
-            this.hitBox.setVelocityX(-10 * Math.round(this.data[6] * 1.3 ** this.data[11]));
+            this.player1.setVelocityX(-10 * this.data[6] * 1.3 ** this.data[11]);
+            this.hitBox.setVelocityX(-10 * this.data[6] * 1.3 ** this.data[11]);
             this.hitBox.setY(this.player1.y - 20);
 
             this.player1.anims.play('left', true);
         } else if (this.cursors.right.isDown)
         {
-            this.player1.setVelocityX(10 * Math.round(this.data[6] * 1.3 ** this.data[11]));
-            this.hitBox.setVelocityX(10 * Math.round(this.data[6] * 1.3 ** this.data[11]));
+            this.player1.setVelocityX(10 * this.data[6] * 1.3 ** this.data[11]);
+            this.hitBox.setVelocityX(10 * this.data[6] * 1.3 ** this.data[11]);
             this.hitBox.setY(this.player1.y - 20);
 
             this.player1.anims.play('right', true);
@@ -229,7 +229,7 @@ class GameScene extends Phaser.Scene {
 
         if (this.cursors.up.isDown && this.player1.body.touching.down)
         {
-            this.player1.setVelocityY(-30 * Math.round(this.data[7] * 1.3 ** this.data[12]));
+            this.player1.setVelocityY(-30 * this.data[7] * 1.3 ** this.data[12]);
             this.hitBox.setVelocityY(-30);
         }
 
