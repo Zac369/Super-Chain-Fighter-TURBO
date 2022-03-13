@@ -46,10 +46,10 @@ class UpgradeScene extends Phaser.Scene {
 		this.add.text(50, 400, 'Speed: ');
 		this.add.text(50, 450, 'Jump: ');
 
-		var attNum = this.add.text(200, 300, this.data[4] * 1.3 ** this.data[9]);
-		var defNum = this.add.text(200, 350, this.data[5] * 1.3 ** this.data[10]);
-		var spdNum = this.add.text(200, 400, this.data[6] * 1.3 ** this.data[11]);
-		var jmpNum = this.add.text(200, 450, this.data[7] * 1.3 ** this.data[12]);
+		var attNum = this.add.text(200, 300, Math.round(this.data[4] * 1.3 ** this.data[9]));
+		var defNum = this.add.text(200, 350, Math.round(this.data[5] * 1.3 ** this.data[10]));
+		var spdNum = this.add.text(200, 400, Math.round(this.data[6] * 1.3 ** this.data[11]));
+		var jmpNum = this.add.text(200, 450, Math.round(this.data[7] * 1.3 ** this.data[12]));
 
 		this.add.text(300, 300, 'Upgrade Cost:', {font: '20px'});
 		this.add.text(300, 350, 'Upgrade Cost:', {font: '20px'});
@@ -72,7 +72,7 @@ class UpgradeScene extends Phaser.Scene {
 			this.data[9]++;
 			attackText.setText(this.data[9] + ' Points');
 			currentPointsText.setText('Current Points: ' + this.currentPoints);
-			attNum.setText(this.data[4] * 1.3 ** this.data[9]);
+			attNum.setText(Math.round(this.data[4] * 1.3 ** this.data[9]));
 		});
 
 		defenseBuy.on('pointerdown', async (a) => {
@@ -81,7 +81,7 @@ class UpgradeScene extends Phaser.Scene {
 			this.data[10]++;
 			defenseText.setText(this.data[10] + ' Points');
 			currentPointsText.setText('Current Points: ' + this.currentPoints);
-			defNum.setText(this.data[5] * 1.3 ** this.data[10]);
+			defNum.setText(Math.round(this.data[5] * 1.3 ** this.data[10]));
 		});
 
 		speedBuy.on('pointerdown', async (a) => {
@@ -90,7 +90,7 @@ class UpgradeScene extends Phaser.Scene {
 			this.data[11]++;
 			speedText.setText(this.data[11] + ' Points');
 			currentPointsText.setText('Current Points: ' + this.currentPoints);
-			spdNum.setText(this.data[6] * 1.3 ** this.data[11]);
+			spdNum.setText(Math.round(this.data[6] * 1.3 ** this.data[11]));
 		});
 
 		jumpBuy.on('pointerdown', async (a) => {
@@ -99,7 +99,7 @@ class UpgradeScene extends Phaser.Scene {
 			this.data[12]++;
 			jumpText.setText(this.data[12] + ' Points');
 			currentPointsText.setText('Current Points: ' + this.currentPoints);
-			jmpNum.setText(this.data[7] * 1.3 ** this.data[12]);
+			jmpNum.setText(Math.round(this.data[7] * 1.3 ** this.data[1]));
 		});
 	}
 

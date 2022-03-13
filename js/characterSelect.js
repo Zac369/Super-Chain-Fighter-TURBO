@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import game from '../Game.json'
 import { connect } from "@textile/tableland";
 
+
 class CharacterSelect extends Phaser.Scene {
 
 	constructor() {
@@ -113,10 +114,10 @@ class CharacterSelect extends Phaser.Scene {
                 const name = this.NFTs[i][1];
 
                 this.add.text(150*i + 30, 430, name, {font: '18px'});
-                this.add.text(150*i + 30, 460, 'Att: ' + this.NFTs[i][4] * 1.3 ** this.NFTs[i][9]), {font: '18px'};
-                this.add.text(150*i + 30, 490, 'Def: ' + this.NFTs[i][5] * 1.3 ** this.NFTs[i][10]), {font: '18px'};
-                this.add.text(150*i + 30, 520, 'Spd: ' + this.NFTs[i][6] * 1.3 ** this.NFTs[i][11]), {font: '18px'};
-                this.add.text(150*i + 30, 550, 'Jmp: ' + this.NFTs[i][7] * 1.3 ** this.NFTs[i][12]), {font: '18px'};
+                this.add.text(150*i + 30, 460, 'Att: ' + Math.round(this.NFTs[i][4] * 1.3 ** this.NFTs[i][9]), {font: '18px'});
+                this.add.text(150*i + 30, 490, 'Def: ' + Math.round(this.NFTs[i][5] * 1.3 ** this.NFTs[i][10]), {font: '18px'});
+                this.add.text(150*i + 30, 520, 'Spd: ' + Math.round(this.NFTs[i][6] * 1.3 ** this.NFTs[i][11]), {font: '18px'});
+                this.add.text(150*i + 30, 550, 'Jmp: ' + Math.round(this.NFTs[i][7] * 1.3 ** this.NFTs[i][12]), {font: '18px'});
 
                 var charImage = this.add.sprite(150*i + 60, 350, name, 4).setInteractive({ useHandCursor: true });
                 this.userCharsGroup.add(charImage);
