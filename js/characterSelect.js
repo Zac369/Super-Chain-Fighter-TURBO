@@ -7,7 +7,7 @@ class CharacterSelect extends Phaser.Scene {
 
 	constructor() {
 		super({key:'characterSelect'});
-	}
+	};
 
 	preload() {
 		this.load.image('sky', 'assets/skies/sky1.png');
@@ -43,7 +43,7 @@ class CharacterSelect extends Phaser.Scene {
                 this.tableName = createRes.name;
             }
             getNFTIDs();
-        } 
+        };
 
         this.connectToDB();
 
@@ -57,7 +57,7 @@ class CharacterSelect extends Phaser.Scene {
             } else if (characterIndex == 2) {
                 return [0, "ryu", "Description for Ryu", "ipfs://QmWLbdKtQ4tHRSJPmJ271dgN5UMmz1PFbrALKnNkL8UXwp", 15, 200, 9, 8, 0, 1, 1, 1, 1, 0];
             }
-        }
+        };
 
         // nft/tableland functions
 
@@ -88,7 +88,7 @@ class CharacterSelect extends Phaser.Scene {
                 console.warn('getNFTIDs Error:', error);
             }
 
-        }
+        };
 
         const queryTable = async () => {
             for (let i = 0; i < NFTIDs.length; i++) {
@@ -103,9 +103,9 @@ class CharacterSelect extends Phaser.Scene {
                 }
             }
             this.displayCharacters();
-        }
+        };
         
-	}
+	};
 
 	create() {
         this.displayCharacters = async () => {
@@ -142,7 +142,7 @@ class CharacterSelect extends Phaser.Scene {
                     });
                 });
             }
-        }
+        };
 
         // Actions
         const mintCharacterNFTAction = async (characterIndex) => {
@@ -179,7 +179,7 @@ class CharacterSelect extends Phaser.Scene {
             console.log(tokenCounter);
 
             const insertRes = await this.tbl.query(`INSERT INTO ${this.tableName} (id, name, description, image, attack, hp, speed, jump, wins, attackLevel, defenseLevel, speedLevel, jumpLevel, currentPoints) VALUES (${tokenCounter}, '${name}', '${description}', '${image}', ${attack}, ${hp}, ${speed}, ${jump}, ${wins}, 1, 1, 1, 1, 0);`);
-        }
+        };
         
 
         this.input.setDefaultCursor("default");
@@ -244,8 +244,8 @@ class CharacterSelect extends Phaser.Scene {
 
         var press_play = this.add.text(100, 200, "Play").setVisible(false);
         var press_upgrade = this.add.text(300, 200, "Upgrade").setVisible(false);
-	}
+	};
 
-}
+};
 
 export default CharacterSelect;

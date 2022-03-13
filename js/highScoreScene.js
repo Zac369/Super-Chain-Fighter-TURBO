@@ -44,7 +44,7 @@ class HighScoreScene extends Phaser.Scene {
                 this.tableName = createRes.name;
             }
             getNFTIDs();
-        } 
+        };
 
         this.connectToDB();
 
@@ -58,7 +58,7 @@ class HighScoreScene extends Phaser.Scene {
             } else if (characterIndex == 2) {
                 return [0, "ryu", "Description for Ryu", "ipfs://QmWLbdKtQ4tHRSJPmJ271dgN5UMmz1PFbrALKnNkL8UXwp", 15, 200, 9, 8, 0, 1, 1, 1, 1, 0];
             }
-        }
+        };
 
         // nft/tableland functions
 
@@ -89,7 +89,7 @@ class HighScoreScene extends Phaser.Scene {
                 console.warn('getNFTIDs Error:', error);
             }
 
-        }
+        };
 
         const queryTable = async () => {
             for (let i = 0; i < NFTIDs.length; i++) {
@@ -104,9 +104,9 @@ class HighScoreScene extends Phaser.Scene {
                 }
             }
             this.displayCharacters();
-        }
+        };
 
-	}
+	};
 
 
 	create() {
@@ -134,13 +134,13 @@ class HighScoreScene extends Phaser.Scene {
 		back.setInteractive({ useHandCursor: true });
         back.on('pointerdown', () => this.clickBack());
 
-	}
+	};
 
 	clickBack() {
     	this.scene.start('titleScene');
-    }
+    };
 
 
-}
+};
 
 export default HighScoreScene;

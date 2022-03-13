@@ -51,5 +51,5 @@ var game;
 		// start title
 		game.scene.start('titleScene');
 	}
-})()
+})();
 

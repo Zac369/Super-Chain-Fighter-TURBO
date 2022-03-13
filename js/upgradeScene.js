@@ -3,7 +3,7 @@ class UpgradeScene extends Phaser.Scene {
 	constructor() {
 		super({key:'upgradeScene'});
 
-	}
+	};
 
 	init(data) {
         this.data = data.character;
@@ -13,7 +13,7 @@ class UpgradeScene extends Phaser.Scene {
 		this.currentPoints = data.character[13];
 		this.tableName = 'chaingame_469'
         console.log(this.selectedCharacter);
-    }
+    };
 
 
 	preload() {
@@ -21,7 +21,7 @@ class UpgradeScene extends Phaser.Scene {
 		this.load.spritesheet('rogue', 'https://ipfs.infura.io/ipfs/QmdG2hytvmwLrk3dpqU4uEKDJHkCJDgtbZSmGSRGX2jx2D', {frameWidth: 100, frameHeight: 100 });
         this.load.spritesheet('heavy', 'https://ipfs.infura.io/ipfs/Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA', {frameWidth: 100, frameHeight: 100 });
         this.load.spritesheet('ryu', 'https://ipfs.infura.io/ipfs/QmWLbdKtQ4tHRSJPmJ271dgN5UMmz1PFbrALKnNkL8UXwp', {frameWidth: 100, frameHeight: 100 });
-	}
+	};
 
 
 	async create() {
@@ -101,15 +101,15 @@ class UpgradeScene extends Phaser.Scene {
 			currentPointsText.setText('Current Points: ' + this.currentPoints);
 			jmpNum.setText(Math.round(this.data[7] * 1.3 ** this.data[1]));
 		});
-	}
+	};
 
 	
 
 	clickBack() {
     	this.scene.start('titleScene');
-    }
+    };
 
 
-}
+};
 
 export default UpgradeScene;

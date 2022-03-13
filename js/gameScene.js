@@ -2,14 +2,14 @@ class GameScene extends Phaser.Scene {
 
     constructor() {
 		super({key : 'gameScene'});
-	}
+	};
 
     init(data) {
         this.data = data.character;
         this.tbl = data.tbl;
         this.selectedCharacter = data.character[1];
         console.log(this.selectedCharacter);
-    }
+    };
 
     preload () {
         this.load.image('sky', 'assets/skies/sky1.png');
@@ -241,9 +241,9 @@ class GameScene extends Phaser.Scene {
 
     gameOver() {
         this.scene.start('gameOver', {character: this.data, tbl: this.tbl});
-    }
+    };
 
     
-}
+};
 
 export default GameScene;

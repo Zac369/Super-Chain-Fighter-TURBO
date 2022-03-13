@@ -5,7 +5,7 @@ class GameOver extends Phaser.Scene {
 
     constructor() {
 		super({key : 'gameOver'});
-	}
+	};
 
     init(data) {
         this.data = data.character;
@@ -19,14 +19,14 @@ class GameOver extends Phaser.Scene {
         this.tableName = 'chaingame_469'
         console.log(this.selectedCharacter);
         console.log(this.wins);
-    }
+    };
 
     preload() {
         this.load.image('sky', 'assets/skies/sky1.png');
 
         this.updateDB = async () => {
             await this.tbl.query(`UPDATE ${this.tableName} SET wins = ${this.wins}, currentpoints = ${this.currentPoints} WHERE id = ${this.id};`);
-        }
+        };
 
         const CONTRACT_ADDRESS = '0xbfFDB2158064aD6E37eB87A9B2efb7dcC64CA4B7';
         const provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -47,8 +47,8 @@ class GameOver extends Phaser.Scene {
             } else if (characterIndex == 2) {
                 return [0, "ryu", "Description for Ryu", "ipfs://QmWLbdKtQ4tHRSJPmJ271dgN5UMmz1PFbrALKnNkL8UXwp", 15, 200, 9, 8, 0, 1, 1, 1, 1, 0];
             }
-        }
-    }
+        };
+    };
 
     async create() {
         const mintCharacterNFTAction = async (characterIndex) => {
@@ -85,7 +85,7 @@ class GameOver extends Phaser.Scene {
             console.log(tokenCounter);
 
             const insertRes = await this.tbl.query(`INSERT INTO ${this.tableName} (id, name, description, image, attack, hp, speed, jump, wins, attackLevel, defenseLevel, speedLevel, jumpLevel, currentPoints) VALUES (${tokenCounter}, '${name}', '${description}', '${image}', ${attack}, ${hp}, ${speed}, ${jump}, ${wins}, 1, 1, 1, 1, 0);`);
-        }
+        };
 
         var bg = this.add.sprite(0,0,'sky');
 		bg.setOrigin(0,0);
@@ -114,15 +114,15 @@ class GameOver extends Phaser.Scene {
         var upgrade = this.add.text( 650, 550, 'Upgrade -->');
 		upgrade.setInteractive({ useHandCursor: true });
         upgrade.on('pointerdown', () => this.clickUpgrade());
-    }
+    };
 
     clickReset() {
     	this.scene.start('titleScene');
-    }
+    };
 
     clickUpgrade() {
         this.scene.start('upgradeScene', {character: this.data, tbl: this.tbl});
-    }
-}
+    };
+};
 
 export default GameOver;
