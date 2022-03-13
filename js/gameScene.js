@@ -14,9 +14,9 @@ class GameScene extends Phaser.Scene {
     preload () {
         this.load.image('sky', 'assets/skies/sky1.png');
         this.load.image('ground','assets/platforms/ground.png');
-        this.load.spritesheet('rogue', 'assets/sprites/rogue/rogue.png', {frameWidth: 100, frameHeight: 100 });
-        this.load.spritesheet('heavy', 'assets/sprites/heavy/heavy.png', {frameWidth: 100, frameHeight: 100 });
-        this.load.spritesheet('ryu', 'assets/sprites/ryu/ryu.png', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('rogue', 'https://ipfs.infura.io/ipfs/QmdG2hytvmwLrk3dpqU4uEKDJHkCJDgtbZSmGSRGX2jx2D', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('heavy', 'https://ipfs.infura.io/ipfs/Qmf3Qas8LDQZAGdkJNudLZHoVG89WaggTwZ4Jay4Lj36WA', {frameWidth: 100, frameHeight: 100 });
+        this.load.spritesheet('ryu', 'https://ipfs.infura.io/ipfs/QmWLbdKtQ4tHRSJPmJ271dgN5UMmz1PFbrALKnNkL8UXwp', {frameWidth: 100, frameHeight: 100 });
     };
 
     create () {
@@ -114,60 +114,74 @@ class GameScene extends Phaser.Scene {
         });
 
 
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers(this.selectedCharacter, { start: 0, end: 3 }),
-            frameRate: 10,
-            repeat: -1
-        });
+        if (this.selectedCharacter == 'rogue' || this.selectedCharacter == 'heavy') {
+            this.anims.create({
+                key: 'left',
+                frames: this.anims.generateFrameNumbers(this.selectedCharacter, { start: 0, end: 3 }),
+                frameRate: 10,
+                repeat: -1
+            });
+    
+            this.anims.create({
+                key: 'turn',
+                frames: [ { key: this.selectedCharacter, frame: 4 } ],
+                frameRate: 20
+            });
+    
+            this.anims.create({
+                key: 'right',
+                frames: this.anims.generateFrameNumbers(this.selectedCharacter, { start: 5, end: 8 }),
+                frameRate: 10,
+                repeat: -1
+            });
+        }
 
-        this.anims.create({
-            key: 'turn',
-            frames: [ { key: this.selectedCharacter, frame: 4 } ],
-            frameRate: 20
-        });
+        if (this.selectedCharacter == 'rogue') {
+            this.anims.create({	
+                key: 'punch',
+                frames: this.anims.generateFrameNumbers('rogue', { start: 9, end: 11 }),
+                frameRate: 20
+            });
+        }
 
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers(this.selectedCharacter, { start: 5, end: 8 }),
-            frameRate: 10,
-            repeat: -1
-        });
+        if (this.selectedCharacter == 'heavy') {
+            this.anims.create({
+                key: 'punch',
+                frames: this.anims.generateFrameNumbers(this.selectedCharacter, { start: 5, end: 8 }),
+                frameRate: 10,
+                repeat: -1
+            });
+        }
 
-        this.anims.create({	
-            key: 'punch',
-            frames: this.anims.generateFrameNumbers('rogue', { start: 9, end: 11 }),
-            frameRate: 20
-        });
+        if (this.selectedCharacter == 'ryu') {
+            // ryu animations
+            this.anims.create({
+                key: 'left',
+                frames: this.anims.generateFrameNumbers('ryu', { start: 0, end: 4 }),
+                frameRate: 12,
+                repeat: -1
+            });
 
+            this.anims.create({ 
+                key: 'turn',
+                frames: this.anims.generateFrameNumbers('ryu', { start: 11, end: 14 }),
+                frameRate: 12
+            });
 
-        // ryu animations
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('ryu', { start: 0, end: 4 }),
-            frameRate: 12,
-            repeat: -1
-        });
+            this.anims.create({
+                key: 'right',
+                frames: this.anims.generateFrameNumbers('ryu', { start: 5, end: 9 }),
+                frameRate: 12,
+                repeat: -1
+            });
 
-        this.anims.create({ 
-            key: 'turn',
-            frames: this.anims.generateFrameNumbers('ryu', { start: 11, end: 14 }),
-            frameRate: 12
-        });
-
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('ryu', { start: 5, end: 9 }),
-            frameRate: 12,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'punch',
-            frames: this.anims.generateFrameNumbers('ryu', { start: 15, end: 19 }),
-            frameRate: 12,
-            repeat: -1
-        })
+            this.anims.create({
+                key: 'punch',
+                frames: this.anims.generateFrameNumbers('ryu', { start: 15, end: 19 }),
+                frameRate: 12,
+                repeat: -1
+            })
+        }
 
         this.cursors = this.input.keyboard.createCursorKeys();
 

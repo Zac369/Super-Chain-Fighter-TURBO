@@ -12,18 +12,14 @@ class TitleScene extends Phaser.Scene {
 		var bg = this.add.sprite(0,0,'sky');
 		bg.setOrigin(0,0);
 
-        var text = this.add.text(250,200, 'Welcome to Super Chain Fighter Turbo!');
-        var play = this.add.text(400,400, 'Play');
+        var text = this.add.text(50, 250, 'Welcome to Super Chain Fighter Turbo!', {font: '32px'});
+        var play = this.add.text(150, 400, 'Play', {font: '24px'});
         play.setInteractive({ useHandCursor: true });
         play.on('pointerdown', () => this.clickButton());
 
-        var highScore = this.add.text( 650, 400, 'High Scores' );
+        var highScore = this.add.text(500, 400, 'High Scores', {font: '24px'});
         highScore.setInteractive({ useHandCursor: true });
         highScore.on('pointerdown', () => this.clickHighScore());
-
-        var upgrade = this.add.text( 50, 400, 'Upgrades' );
-        upgrade.setInteractive({ useHandCursor: true });
-        upgrade.on('pointerdown', () => this.clickUpgrade());
 	}
 
     clickButton() {
@@ -33,11 +29,6 @@ class TitleScene extends Phaser.Scene {
     clickHighScore() {
     	this.scene.start('highScoreScene');
     }
-
-    clickUpgrade() {
-    	this.scene.start('upgradeScene');
-    }
-
 }
 
 export default TitleScene;
